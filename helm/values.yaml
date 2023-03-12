@@ -27,7 +27,7 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: 
-   - secretName: kube-system/mkcert
+   - secretName: mkcert
      hosts:
        - allo-k8s.com
 
