@@ -11,7 +11,7 @@ image:
   tag: ""
 
 imagePullSecrets: 
-  -name: "ghcr-skiscontent-regcred"
+  - name: "ghcr-skiscontent-regcred"
 nameOverride: ""
 fullnameOverride: ""
 
