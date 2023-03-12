@@ -47,5 +47,5 @@ jobs:
           context: ./
           push: true
           tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:v0.0.1
-          
           labels: ${{ steps.meta.outputs.labels }}
+          platform: linux/arm64,linux/amd64
