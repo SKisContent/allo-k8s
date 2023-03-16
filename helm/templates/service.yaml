@@ -11,11 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-{{- if .Values.prometheusPort -}}
     - port: {{ .Values.prometheusPort }}
       targetPort: prometheus
       protocol: TCP
       name: prometheus
-{{- end -}}
   selector:
     {{- include "allo-k8s.selectorLabels" . | nindent 4 }}
