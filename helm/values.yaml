@@ -26,6 +26,10 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+          servicePort: 80
+        - path: /metrics/
+          pathType: ImplementationSpecific
+          servicePort: 8000
   tls: 
    - secretName: mkcert
      hosts:
