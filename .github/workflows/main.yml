@@ -1,4 +1,8 @@
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - "helm/**"
+      - "argocd/**"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -6,13 +10,27 @@ jobs:
   allo_k8s_job:
     runs-on: ubuntu-latest
     name: This job creates a Docker image
+    permissions:
+      contents: write
     steps:
       # To use this repository's private action,
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
-      - id: convertRepository
-        uses: ASzc/change-string-case-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Bandit Action
+        uses: mdegis/bandit-action@v1.0
+        id: bandit
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLASSIC_TOKEN }}
+          path: "allo"
+          level: high
+          confidence: high
+          exit_zero: true
+      - name: Repo name lowercase
+        id: convertRepository
+        uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ env.IMAGE_NAME }}
       - id: echoRegistryName
@@ -23,28 +41,59 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.CLASSIC_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
       - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v2
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          github-token: ${{ secrets.CLASSIC_TOKEN }}
       - name: Build and Push Versioned Docker Image
         id: build-and-push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           context: ./
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/arm64,linux/amd64
       - name: Build and Push Latest Docker Image
         id: build-and-push-latest
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           context: ./
           push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest
+          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/arm64,linux/amd64
+      - id: echoDockerInfo
+        run: >
+          echo "Tags=>${{ steps.meta.outputs.tags }} 
+          Labels=>${{ steps.meta.outputs.labels }} 
+          Version=>${{ steps.meta.outputs.version }}
+          JSON=>${{ steps.meta.outputs.json }}"
+      - name: Update Image Version
+        id: imgupd
+        uses: mikefarah/yq@v4.34.1
+        with:
+          cmd: >-
+            yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}" |
+            .image.tag = "${{ steps.meta.outputs.version }}" |
+            .image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"'
+            -i helm/values.yaml
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply image name changes
