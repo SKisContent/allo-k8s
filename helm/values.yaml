@@ -5,17 +5,36 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/skiscontent/allo-k8s
-  pullPolicy: IfNotPresent
+  repository: ghcr.io/skiscontent/allo-k8s
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+  # specify the image digest to use
+  digest: ""
+   
 
-imagePullSecrets: []
+imagePullSecrets: 
+  - name: "ghcr-regcred"
+
 nameOverride: ""
 fullnameOverride: ""
 
 ingress:
-  enabled: false
+  enabled: true
+  className: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: allo-k8s.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          servicePort: 80
+  tls:
+    - secretName: mkcert
+      hosts:
+        - allo-k8s.com
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -31,13 +50,13 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
   # capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP
