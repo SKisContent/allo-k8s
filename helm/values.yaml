@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/skiscontent/allo-k8s
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v0.0.1"
 
@@ -27,9 +27,6 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
           servicePort: 80
-        - path: /metrics/
-          pathType: ImplementationSpecific
-          servicePort: 8000
   tls: 
    - secretName: mkcert
      hosts:

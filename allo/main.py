@@ -1,6 +1,6 @@
 from flask import Flask
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
+from prometheus_client import make_wsgi_app, Summary
 
 app = Flask(__name__)
 
@@ -15,4 +15,4 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
 
 if __name__ == "__main__":
     # Only for debugging while developing
-    app.run(host="0.0.0.0", debug=True, port=80)
+    app.run(host="0.0.0.0", debug=True, port=8080)
