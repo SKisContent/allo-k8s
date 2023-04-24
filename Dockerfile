@@ -2,7 +2,7 @@ FROM tiangolo/uwsgi-nginx-flask:python3.9
 
 RUN apt update && apt install -y dnsutils net-tools iputils-ping \
     traceroute inetutils-traceroute iputils-tracepath iproute2 \
-    netcat iptables
+    netcat iptables conntrackd
 WORKDIR /app
 COPY ./allo /app/allo
 COPY ./requirements.txt /app/requirements.txt
