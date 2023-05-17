@@ -14,8 +14,8 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Bandit scan
-        uses: shundor/bandit-action@main
+      - name: Bandit Action
+        uses: mdegis/bandit-action@v1.0
         id: bandit
         with: 
           GITHUB_TOKEN: ${{ secrets.CLASSIC_TOKEN }}
