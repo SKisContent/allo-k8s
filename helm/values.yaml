@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.1"
+  tag: "v0.0.1@sha256:6e02002d437b3af38bd38df58125f3d4425c5299a7a161834da9cdf03a00af61"
 
 imagePullSecrets: 
   - name: "ghcr-skiscontent-regcred"
@@ -16,7 +16,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations: 
     kubernetes.io/ingress.class: nginx
