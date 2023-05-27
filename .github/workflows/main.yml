@@ -25,7 +25,8 @@ jobs:
           level: high
           confidence: high
           exit_zero: true
-      - id: convertRepository
+      - name: Repo name lowercase
+        id: convertRepository
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ env.IMAGE_NAME }}
@@ -45,12 +46,18 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v2
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          github-token: ${{ secrets.CLASSIC_TOKEN }}
       - name: Build and Push Versioned Docker Image
         id: build-and-push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           context: ./
@@ -67,3 +74,13 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:v0.0.1
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64,linux/amd64
+      - name: Update Image Version
+        id: imgupd
+        uses: mikefarah/yq@v4.34.1
+        with:
+          cmd: yq eval '.image.tag = "${{ steps.meta.outputs.tags }}"' -i helm/values.yaml
+          
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply image name changes
