@@ -1,7 +1,7 @@
 on:
   pull_request:
     paths-ignore:
-      - "/helm/**"
+      - "helm/**"
     branches:
       - "main"
 env:
