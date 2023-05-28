@@ -83,7 +83,7 @@ jobs:
         id: imgupd
         uses: mikefarah/yq@v4.34.1
         with:
-          cmd: yq eval '.image.tag = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"' -i helm/values.yaml
+          cmd: yq eval '.image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"' -i helm/values.yaml
           
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
