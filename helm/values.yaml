@@ -9,7 +9,7 @@ image:
   # Add a tag: field to override the image tag whose default is the chart appVersion
   # tag: foo
   # specify the image digest to use
-  digest: "sha256:a65c0981a4bfc3da41acee1db974493dba18c2f0a78c9a507236258bf864ba0d"
+  digest: "sha256:407132a7229a990d2ee563e3c47d1ac94b7203c972db18fa84f01e0c8fa7fda8"
 imagePullSecrets:
   - name: "ghcr-skiscontent-regcred"
 nameOverride: ""
