@@ -64,7 +64,7 @@ jobs:
         with:
           context: ./
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64,linux/amd64
       - name: Build and Push Latest Docker Image
@@ -74,15 +74,24 @@ jobs:
         with:
           context: ./
           push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:v0.0.1
+          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64,linux/amd64
+      - id: echoDockerInfo
+        run: >
+          echo "Tags=>${{ steps.meta.outputs.tags }} 
+          Labels=>${{ steps.meta.outputs.labels }} 
+          Version=>${{ steps.meta.outputs.version }}
+          JSON=>${{ steps.meta.outputs.json }}"
       - name: Update Image Version
         id: imgupd
         uses: mikefarah/yq@v4.34.1
         with:
-          cmd: yq eval '.image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"' -i helm/values.yaml
-          
+          cmd: >-
+            yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}",
+            .image.tag = "${{ steps.meta.outputs.version }}",
+            .image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"'
+            -i helm/values.yaml
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
