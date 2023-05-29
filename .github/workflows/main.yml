@@ -2,6 +2,7 @@ on:
   push:
     paths-ignore:
       - "helm/**"
+      - "argocd/**"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
