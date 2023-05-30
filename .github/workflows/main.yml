@@ -89,8 +89,8 @@ jobs:
         uses: mikefarah/yq@v4.34.1
         with:
           cmd: >-
-            yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}",
-            .image.tag = "${{ steps.meta.outputs.version }}",
+            yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}" |
+            .image.tag = "${{ steps.meta.outputs.version }}" |
             .image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"'
             -i helm/values.yaml
       - name: Commit changes
