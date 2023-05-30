@@ -6,9 +6,9 @@ image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Add a tag: field to override the image tag whose default is the chart appVersion
-  tag: sleep-service
+  tag: fix-workflow
   # specify the image digest to use
-  digest: "sha256:c22a8f57938ea2c86105131e5f2a75f39497ddf0b9cb31a4d7793f8c6f03998e"
+  digest: "sha256:acdb08fa2c4c7e0f763ace813bd9dda709bac91a3245472ae3a7855e5e774e92"
 imagePullSecrets:
   - name: "ghcr-skiscontent-regcred"
 nameOverride: ""
