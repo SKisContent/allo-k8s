@@ -11,13 +11,29 @@ image:
   tag: main
   # specify the image digest to use
   digest: "sha256:b972257a519580e75727520907c73e8d0063e2e82ec34bd5061efc34c9a632c0"
+
 imagePullSecrets:
-  - name: "ghcr-skiscontent-regcred"
+  - name: "ghcr-regcred"
+
 nameOverride: ""
 fullnameOverride: ""
 
 ingress:
-  enabled: false
+  enabled: true
+  className: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: allo-k8s.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          servicePort: 80
+  tls:
+    - secretName: mkcert
+      hosts:
+        - allo-k8s.com
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -33,13 +49,13 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
   # capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP
