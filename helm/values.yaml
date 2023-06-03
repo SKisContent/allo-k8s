@@ -3,22 +3,17 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
 image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "asltw"
   # specify the image digest to use
-  digest: ""
-   
-
-imagePullSecrets: 
+  digest: "sha256:e2f2f53927358b8fc4ee421526050894fee2e21adfe6c0d82e1082f650ba081f"
+imagePullSecrets:
   - name: "ghcr-regcred"
-
 nameOverride: ""
 fullnameOverride: ""
-
 ingress:
   enabled: true
   className: ""
@@ -35,7 +30,6 @@ ingress:
     - secretName: mkcert
       hosts:
         - allo-k8s.com
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
@@ -44,28 +38,21 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-
 podAnnotations: {}
-
 podSecurityContext: {}
-  # fsGroup: 2000
+# fsGroup: 2000
 
 securityContext:
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
 service:
   type: ClusterIP
   port: 80
-
 resources: {}
-
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
