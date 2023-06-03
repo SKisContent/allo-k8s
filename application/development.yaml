@@ -1,0 +1,13 @@
+project: development
+source:
+  repoURL: 'https://github.com/skiscontent/allo-k8s.git'
+  path: helm
+  targetRevision: asltw
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: allo-k8s-development
+syncPolicy:
+  automated: {}
+info:
+  - name: foo
+    value: This is some information for development
