@@ -23,7 +23,7 @@ jobs:
         uses: mdegis/bandit-action@v1.0
         id: bandit
         with: 
-          GITHUB_TOKEN: ${{ secrets.CLASSIC_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           path: "allo"
           level: high
           confidence: high
@@ -57,7 +57,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-          github-token: ${{ secrets.CLASSIC_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and Push Versioned Docker Image
         id: build-and-push
         uses: docker/build-push-action@v4
