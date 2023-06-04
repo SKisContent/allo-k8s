@@ -39,9 +39,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-            - name: prometheus
-              containerPort: {{ .Values.prometheusPort }}
-              protocol: TCP
           livenessProbe:
             httpGet:
               path: /
