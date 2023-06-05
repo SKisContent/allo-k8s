@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: allo-k8s-development
+  name: allo-k8s-production
 spec:
   destination:
     namespace: allo-k8s-production
