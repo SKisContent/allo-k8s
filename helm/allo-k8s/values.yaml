@@ -6,10 +6,10 @@ replicaCount: 1
 image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
-  # Add a tag: field to override the image tag whose default is the chart appVersion
-  tag: main
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "asltw"
   # specify the image digest to use
-  digest: "sha256:b8baa11b9525c666ac6c17eb7d6df6e8a29a488e7e2f22ab58d73874f7175dc6"
+  digest: "sha256:32bbf57d91100fd9a9b293c8941fcc91a4f5022e8c89e711b25f6fcbba9f5c1e"
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
@@ -43,12 +43,12 @@ podSecurityContext: {}
 # fsGroup: 2000
 
 securityContext:
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1000
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
 service:
   type: ClusterIP
   port: 80
