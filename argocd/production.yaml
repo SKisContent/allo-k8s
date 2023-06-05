@@ -11,4 +11,11 @@ spec:
     path: helm/allo-k8s
     repoURL: https://github.com/skiscontent/allo-k8s.git
     targetRevision: main
-  syncPolicy: {}
+    helm:
+      parameters:
+      - name: "ingress.enabled"
+        value: "false"
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
