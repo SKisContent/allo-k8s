@@ -11,4 +11,7 @@ spec:
     path: helm/allo-k8s
     repoURL: https://github.com/skiscontent/allo-k8s.git
     targetRevision: main
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
