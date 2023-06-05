@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: allo-k8s-development
+  name: allo-k8s-production
 spec:
   destination:
     namespace: allo-k8s-production
@@ -11,6 +11,10 @@ spec:
     path: helm/allo-k8s
     repoURL: https://github.com/skiscontent/allo-k8s.git
     targetRevision: main
+    helm:
+      parameters:
+      - name: "ingress.enabled"
+        value: "false"
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
