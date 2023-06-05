@@ -7,9 +7,9 @@ image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "asltw"
+  tag: "main"
   # specify the image digest to use
-  digest: "sha256:c248e24862e2c99d995d543a9cda17deda14a3a08fc13b76635745a30347df87"
+  digest: "sha256:ea98596c4821ae3edc975ce5b39bcec2a8c02c809377ceb66517c66bdb3a92fb"
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
