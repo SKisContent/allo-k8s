@@ -9,7 +9,7 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "asltw"
   # specify the image digest to use
-  digest: "sha256:a30ef41d68a2b2dd91f870c350cf30858e0f85b14a56e62184b9993e214dc0b6"
+  digest: "sha256:32bbf57d91100fd9a9b293c8941fcc91a4f5022e8c89e711b25f6fcbba9f5c1e"
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
