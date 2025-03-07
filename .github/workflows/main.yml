@@ -7,14 +7,40 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+    name: Run the tests
+    env: 
+      PYTHON_VERSION: '3.10'
+      PYTHON_VERSION_RUFF: 'py310'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint and with ruff
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          ruff --format=github --select=E9,F63,F7,F82 --target-version=${{ env.PYTHON_VERSION_RUFF }} .
+          # default set of ruff rules with GitHub Annotations
+          ruff --format=github --target-version=${{ env.PYTHON_VERSION_RUFF }} .
+      - name: Test with pytest
+        run: |
+          pytest
+
   allo_k8s_job:
     runs-on: ubuntu-latest
     name: This job creates a Docker image
     permissions:
       contents: write
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -53,39 +79,27 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and Push Versioned Docker Image
+      - name: Build and Push Docker Image
         id: build-and-push
         uses: docker/build-push-action@v4
-        if: ${{ github.ref != 'refs/heads/main' }}
         with:
           context: ./
           push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64,linux/amd64
-      - name: Build and Push Latest Docker Image
-        id: build-and-push-latest
-        uses: docker/build-push-action@v4
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          context: ./
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:latest, ${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}:${{ steps.meta.outputs.version }}
-          labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/arm64,linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Update Image Version
-        id: imgupd
         uses: mikefarah/yq@v4.34.1
         with:
           cmd: >-
             yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}" |
-            .image.tag = "${{ steps.meta.outputs.version }}" |
-            .image.digest = "${{ steps.build-and-push.outputs.digest || steps.build-and-push-latest.outputs.digest}}"'
+            .image.tag = "${{ github.sha }}" |
+            .image.digest = "${{ steps.build-and-push.outputs.digest }}"'
             -i helm/allo-k8s/values.yaml
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4

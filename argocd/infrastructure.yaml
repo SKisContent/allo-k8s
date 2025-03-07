@@ -1,19 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: allo-k8s-development
+  name: infrastructure
+  namespace: argocd
 spec:
-  destination:
-    namespace: allo-k8s-development
-    server: https://EE9A09B31B46CC0C8310257999A10BF9.gr7.us-east-1.eks.amazonaws.com
   project: default
   source:
-    path: helm/allo-k8s
     repoURL: https://github.com/skiscontent/allo-k8s.git
-    targetRevision: asltw
+    targetRevision: main
+    path: k8s/infrastructure
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  wait: true 
