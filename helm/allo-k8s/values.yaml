@@ -20,9 +20,9 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    external-dns.alpha.kubernetes.io/hostname: "allo.a-sk.com"
+    external-dns.alpha.kubernetes.io/hostname: "allo.fun.skiscontent.com"
   hosts:
-    - host: allo.a-sk.com
+    - host: allo.fun.skiscontent.com
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -30,7 +30,7 @@ ingress:
   tls:
     - secretName: allo-tls
       hosts:
-        - allo.a-sk.com
+        - allo.fun.skiscontent.com
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
