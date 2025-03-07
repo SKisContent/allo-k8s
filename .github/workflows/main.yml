@@ -35,6 +35,7 @@ jobs:
           pytest
 
   allo_k8s_job:
+    needs: tests
     runs-on: ubuntu-latest
     name: This job creates a Docker image
     permissions:
