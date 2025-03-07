@@ -7,9 +7,9 @@ image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "main"
+  tag: "c7214bd952aac365c4f38d2005172ab37abd3846"
   # specify the image digest to use
-  digest: "sha256:50e0a06b8ab335a4a97e896e81e097d4835a0dade91b7af0d9ab25dcfc4ee82d"
+  digest: "sha256:31766d3316440174567cb339bcd9347f6969fa8ee9d089df0b3314a5e0e2b536"
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
@@ -65,12 +65,12 @@ tolerations: []
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app.kubernetes.io/name
-            operator: In
-            values:
-            - allo-k8s
-        topologyKey: kubernetes.io/hostname
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - allo-k8s
+          topologyKey: kubernetes.io/hostname
