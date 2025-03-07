@@ -97,8 +97,7 @@ jobs:
         with:
           cmd: >-
             yq eval '.image.repository = "${{ env.REGISTRY }}/${{ steps.convertRepository.outputs.lowercase }}" |
-            .image.tag = "${{ github.sha }}" |
-            .image.digest = "${{ steps.build-and-push.outputs.digest }}"'
+            .image.tag = "${{ github.sha }}"'
             -i helm/allo-k8s/values.yaml
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
