@@ -7,7 +7,7 @@ image:
   repository: ghcr.io/skiscontent/allo-k8s
   pullPolicy: Always
   # Set the image tag to the commit hash.
-  tag: "89727f67a222e8a300661153984068ccfea805a1"
+  tag: "77dac6a54f7caa553904053bbcdbeb136ed8c7e0"
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
